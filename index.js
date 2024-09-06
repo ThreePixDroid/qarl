@@ -1,0 +1,7 @@
+export { Core } from './core/Core'
+export { EVENTS } from './core/events'
+export { DEFAULTS } from './core/defaults'
+export { Notifier } from './emitter/Notifier'
+export { FromTo } from './controllers/FromTo'
+export { easings } from './behaviors/easings'
+export { modes } from './behaviors/modes'
