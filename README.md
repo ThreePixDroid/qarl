@@ -10,7 +10,7 @@ New project! 💡 It surely has some bugs, unfinished features, and odd solution
 
 ## Why QARL? 🏎️💨
 
-Looking for speed? QARL's **FromTo** animation calculates so fast, it feels like it bends space-time! 💫 No more waiting for slow computations—just smooth, seamless transitions that keep up with the pace of your game.
+Looking for performance? QARL's FromTo animation computes so fast, it feels like it bends space-time! 💫 No more waiting for slow calculations—just smooth, seamless transitions that keep up with the pace of your game.
 
 ## Installation
 
