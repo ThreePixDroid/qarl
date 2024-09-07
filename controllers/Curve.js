@@ -1,23 +1,5 @@
 import { Core } from "../core/Core"
 
-// new QARL.Curve({
-//     target: cube,
-//     loop: true,
-//     time: 10000,
-//     mode: QARL.modes.yoyo,
-//     easing: QARL.easings.inOutQuad,
-//     smoothing: 1000,
-//     properties: ['position.x', 'position.y', 'position.z', 'scale.z', 'scale.x', 'scale.y'],
-//     points: [
-//         [-2, -2, 0, .1, .5, .5],
-//         [2, -2, 0, .5, .2, .2],
-//         [2, 0, 0, .1, .5, .5],
-//         [-2, 0, 0, .5, .2, .2],
-//         [-2, 2, 0, .1, .5, .5],
-//         [2, 2, 0, .5, .2, .2],
-//     ],
-// })
-
 export class Curve extends Core {
     static DEFAULTS = {
         ...Core.DEFAULTS,
