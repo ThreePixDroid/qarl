@@ -1,0 +1,19 @@
+{
+  "name": "qarl",
+  "version": "1.0.0",
+  "description": "simple animation library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThreePixDroid/qarl.git"
+  },
+  "author": "threepixdroid",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThreePixDroid/qarl/issues"
+  },
+  "homepage": "https://github.com/ThreePixDroid/qarl#readme"
+}

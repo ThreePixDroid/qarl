@@ -1,97 +1,97 @@
 export class Notifier {
-  constructor() {
-      this.events = {}
-  }
+    constructor() {
+        this.events = {}
+    }
 
-  /**
-   * Подписка на событие
-   * @param {string} eventName - Название события
-   * @param {function} listener - Функция обработчик события
-   */
-  on(eventName, listener) {
-      if (!this.events[eventName]) {
-          this.events[eventName] = []
-      }
-      this.events[eventName].push(listener)
-  }
+    /**
+     * Subscribe to an event
+     * @param {string} eventName - Name of the event
+     * @param {function} listener - Event handler function
+     */
+    on(eventName, listener) {
+        if (!this.events[eventName]) {
+            this.events[eventName] = []
+        }
+        this.events[eventName].push(listener)
+    }
 
-  /**
-   * Отписка от события
-   * @param {string} eventName - Название события
-   * @param {function} listener - Функция обработчик события
-   */
-  off(eventName, listener) {
-      if (!this.events[eventName]) return
-      this.events[eventName] = this.events[eventName].filter(l => l !== listener)
-  }
+    /**
+     * Unsubscribe from an event
+     * @param {string} eventName - Name of the event
+     * @param {function} listener - Event handler function
+     */
+    off(eventName, listener) {
+        if (!this.events[eventName]) return
+        this.events[eventName] = this.events[eventName].filter(l => l !== listener)
+    }
 
-  /**
-   * Генерация события
-   * @param {string} eventName - Название события
-   * @param  {...any} args - Аргументы, передаваемые обработчику события
-   */
-  emit(eventName, ...args) {
-      if (!this.events[eventName]) return
-      this.events[eventName].forEach(listener => listener(...args))
-  }
+    /**
+     * Emit an event
+     * @param {string} eventName - Name of the event
+     * @param  {...any} args - Arguments passed to the event handler
+     */
+    emit(eventName, ...args) {
+        if (!this.events[eventName]) return
+        this.events[eventName].forEach(listener => listener(...args))
+    }
 
-  /**
-   * Разовая подписка на событие
-   * @param {string} eventName - Название события
-   * @param {function} listener - Функция обработчик события
-   */
-  once(eventName, listener) {
-      const onceListener = (...args) => {
-          this.off(eventName, onceListener)
-          listener(...args)
-      }
-      this.on(eventName, onceListener)
-  }
+    /**
+     * Subscribe to an event once
+     * @param {string} eventName - Name of the event
+     * @param {function} listener - Event handler function
+     */
+    once(eventName, listener) {
+        const onceListener = (...args) => {
+            this.off(eventName, onceListener)
+            listener(...args)
+        }
+        this.on(eventName, onceListener)
+    }
 
-  /**
-   * Получить список обработчиков события
-   * @param {string} eventName - Название события
-   * @returns {function[]} Список обработчиков
-   */
-  getListeners(eventName) {
-      return this.events[eventName] || []
-  }
+    /**
+     * Get the list of event listeners
+     * @param {string} eventName - Name of the event
+     * @returns {function[]} List of event handlers
+     */
+    getListeners(eventName) {
+        return this.events[eventName] || []
+    }
 
-  /**
-   * Получить количество обработчиков события
-   * @param {string} eventName - Название события
-   * @returns {number} Количество обработчиков
-   */
-  getListenerCount(eventName) {
-      return this.events[eventName] ? this.events[eventName].length : 0
-  }
+    /**
+     * Get the number of event listeners
+     * @param {string} eventName - Name of the event
+     * @returns {number} Number of event listeners
+     */
+    getListenerCount(eventName) {
+        return this.events[eventName] ? this.events[eventName].length : 0
+    }
 
-  /**
-   * Удаление всех подписок или подписок определенного типа
-   * @param {string} [eventName] - Название события (опционально)
-   */
-  removeAllListeners(eventName) {
-      if (eventName) {
-          delete this.events[eventName]
-      } else {
-          this.events = {}
-      }
-  }
+    /**
+     * Remove all listeners or listeners of a specific event type
+     * @param {string} [eventName] - Name of the event (optional)
+     */
+    removeAllListeners(eventName) {
+        if (eventName) {
+            delete this.events[eventName]
+        } else {
+            this.events = {}
+        }
+    }
 
-  /**
-   * Получить список всех событий
-   * @returns {string[]} Список названий событий
-   */
-  getEventNames() {
-      return Object.keys(this.events)
-  }
+    /**
+     * Get the list of all event names
+     * @returns {string[]} List of event names
+     */
+    getEventNames() {
+        return Object.keys(this.events)
+    }
 
-  /**
-   * Проверить наличие подписчиков на событие
-   * @param {string} eventName - Название события
-   * @returns {boolean} True, если есть подписчики, иначе False
-   */
-  hasListeners(eventName) {
-      return this.getListenerCount(eventName) > 0
-  }
+    /**
+     * Check if there are any listeners for an event
+     * @param {string} eventName - Name of the event
+     * @returns {boolean} True if there are listeners, otherwise False
+     */
+    hasListeners(eventName) {
+        return this.getListenerCount(eventName) > 0
+    }
 }
