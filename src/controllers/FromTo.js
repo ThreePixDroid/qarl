@@ -15,21 +15,20 @@ export class FromTo extends Core {
   }
 
   _processFromTo() {
-    if (!this.target) {
+    if (this.target) {
+      this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
+      this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
+
+      if (this.settings.dynamic) {
+        this._updateFromTo = this._updateDynamic
+      } else {
+        this._recreateLerps()
+        this._updateFromTo = this._updateStatic
+      }
+    } else {
       this._updateFromTo = Core._noop
       this._from = {}
       this._to = {}
-    } else {
-      this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
-      this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
-      
-      if (this.settings.dynamic) {
-        this._updateFromTo = this._updateDynamic.bind(this)
-      } else {
-        this._lerps = []
-        this._createLerps(this.target, this._from, this._to)
-        this._updateFromTo = this._updateStatic.bind(this)
-      }
     }
   }
 
@@ -49,12 +48,17 @@ export class FromTo extends Core {
   _createLerpStep(target, objFrom, objTo, propName) {
     const staticDelta = objTo[propName] - objFrom[propName]
 
-    return (easeValue) => {
-      target[propName] = objFrom[propName] + staticDelta * easeValue
+    return () => {
+      target[propName] = objFrom[propName] + staticDelta * this.easeValue
     }
   }
 
-  _createLerps(target, from, to) {
+  _recreateLerps() {
+    this._lerps = []
+    this._createLerps()
+  }
+
+  _createLerps(target = this.target, from = this._from, to = this._to) {
     for (const key in to) {
       typeof to[key] === 'object'
         ? this._createLerps(target[key], from[key], to[key])
@@ -68,7 +72,7 @@ export class FromTo extends Core {
   }
 
   _updateStatic() {
-    this._lerps.forEach(lerpStep => lerpStep(this.easeValue))
+    this._lerps.forEach(lerpStep => lerpStep())
   }
 
   _updateDynamic(target = this.target, from = this._from, to = this._to) {
@@ -79,28 +83,21 @@ export class FromTo extends Core {
     }
   }
 
-  from(newFrom = {}) {
-    this.tweak({ from: newFrom })
+  from(from = {}) {
+    this.tweak({ from })
     this._processFromTo()
     return this
   }
 
-  to(newTo = {}) {
-    this.tweak({ to: newTo })
+  to(to = {}) {
+    this.tweak({ to })
     this._processFromTo()
     return this
   }
 
   swap() {
-    const temp = this._from
-    this._from = this._to
-    this._to = temp
-
-    if (!this.settings.dynamic) {
-      this._lerps = []
-      this._createLerps(this.target, this._from, this._to)
-    }
-
+    [this._from, this._to] = [this._to, this._from]
+    if (!this.settings.dynamic) this._recreateLerps()
     return this
   }
 }
