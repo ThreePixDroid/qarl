@@ -3,15 +3,28 @@ import { Core } from "../core/Core"
 export class Curve extends Core {
     static DEFAULTS = {
         ...Core.DEFAULTS,
-        target: null,
         properties: [],
         points: [],
         smoothing: 20,
-        // targets: [],
         // useLerp: true,
         // path: [],
         // speed: 1,
     };
+
+    _preparePropertySetters() {
+        this.propertySetters = this.settings.properties.map(property => {
+            const keys = property.split('.')
+            const lastKey = keys.pop()
+
+            return (value) => {
+                let obj = this.target
+                for (let i = 0; i < keys.length; i++) {
+                    obj = obj[keys[i]]
+                }
+                obj[lastKey] = value
+            }
+        })
+    }
 
     _generatePath() {
         const points = this.settings.points
@@ -63,22 +76,17 @@ export class Curve extends Core {
         super._refreshDynamicProps()
         this.path = this._generatePath()
 
-        if (!this.settings.target || this.path.length === 0 || this.settings.properties.length === 0) {
+        if (!this.target || this.path.length === 0 || this.settings.properties.length === 0) {
             this._setTargetProperties = Core._noop
+        } else {
+            this._preparePropertySetters()
         }
     }
 
     _setTargetProperties(values) {
-        this.settings.properties.forEach((property, index) => {
-            const keys = property.split('.')
-            let obj = this.settings.target
-
-            for (let i = 0; i < keys.length - 1; i++) {
-                obj = obj[keys[i]]
-            }
-
-            obj[keys[keys.length - 1]] = values[index]
-        })
+        for (let i = 0; i < this.propertySetters.length; i++) {
+            this.propertySetters[i](values[i])
+        }
     }
 
     _clamp(value, min, max) {
@@ -90,7 +98,6 @@ export class Curve extends Core {
     }
 
     _getInterpolatedPosition() {
-        // Вычисляем точное положение между точками
         const maxIndex = this.path.length - 1
         const exactIndex = this.easeValue * maxIndex
         const clampedExactIndex = this._clamp(exactIndex, 0, maxIndex)

@@ -68,6 +68,8 @@ export class Core {
      * @private
      */
     _refreshDynamicProps() {
+        this.target = this.settings.target
+        
         this.time = Math.max(this.settings.time, 0)
         this.repeat = this.settings.repeat > 0 ? this.settings.repeat : this.settings.loop ? Infinity : 0
         this.reversed = this.settings.reversed

@@ -5,7 +5,6 @@ export class FromTo extends Core {
   static DEFAULTS = {
     ...Core.DEFAULTS,
     dynamic: false, // в динамическом состоянии можно обновлять значения from и to во время анимации
-    target: null,
     from: null,
     to: null
   }
@@ -16,22 +15,23 @@ export class FromTo extends Core {
   }
 
   _processFromTo() {
-    this.target = this.settings.target
-
-    this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
-    this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
-
     if (!this.target) {
       this._updateFromTo = Core._noop
-    } else if (this.settings.dynamic) {
-      this._updateFromTo = this._updateDynamic.bind(this)
+      this._from = {}
+      this._to = {}
     } else {
-      this._lerps = []
-      this._createLerps(this.target, this._from, this._to)
-      this._updateFromTo = this._updateBaked.bind(this)
+      this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
+      this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
+      
+      if (this.settings.dynamic) {
+        this._updateFromTo = this._updateDynamic.bind(this)
+      } else {
+        this._lerps = []
+        this._createLerps(this.target, this._from, this._to)
+        this._updateFromTo = this._updateStatic.bind(this)
+      }
     }
   }
-
 
   _createState(origPattern = {}, origSource = {}, origTarget = {}) {
     const _copyProperty = (pattern, source, target) => {
@@ -67,7 +67,7 @@ export class FromTo extends Core {
     this._updateFromTo()
   }
 
-  _updateBaked() {
+  _updateStatic() {
     this._lerps.forEach(lerpStep => lerpStep(this.easeValue))
   }
 
@@ -103,6 +103,4 @@ export class FromTo extends Core {
 
     return this
   }
-
 }
-

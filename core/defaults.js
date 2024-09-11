@@ -6,6 +6,7 @@ export const DEFAULTS = {
   mode: null,
   delay: 0,
   repeat: 0,
+  target: null,
   easing: easings.linear,
   reversed: false,
   repeatDelay: 0,
