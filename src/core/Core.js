@@ -1,6 +1,6 @@
 import { Notifier } from "../emitter/Notifier"
-import { DEFAULTS } from "../core/defaults"
-import { EVENTS } from "../core/events"
+import { DEFAULTS } from "./defaults"
+import { EVENTS } from "./events"
 
 /**
  * Core - Main class for managing animations.
