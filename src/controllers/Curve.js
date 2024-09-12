@@ -3,16 +3,16 @@ import { Core } from "../core/Core"
 export class Curve extends Core {
     static DEFAULTS = {
         ...Core.DEFAULTS,
-        properties: [],
+        properties: null,
         points: [],
         smoothing: 20,
         // useLerp: true,
         // path: [],
         // speed: 1,
-    };
+    }
 
     _preparePropertySetters() {
-        this.propertySetters = this.settings.properties.map(property => {
+        this.propertySetters = this.properties.map(property => {
             const keys = property.split('.')
             const lastKey = keys.pop()
 
@@ -76,10 +76,27 @@ export class Curve extends Core {
         super._refreshDynamicProps()
         this.path = this._generatePath()
 
-        if (!this.target || this.path.length === 0 || this.settings.properties.length === 0) {
+        if (!this.target || this.path.length === 0) {
             this._setTargetProperties = Core._noop
         } else {
+            this._tryToSetupProperties()
             this._preparePropertySetters()
+        }
+    }
+
+    _tryToSetupProperties() {
+        if (this.settings.properties) {
+            this.properties = this.settings.properties
+        } else if (this.path[0].length <= 3) {
+            const propertiesLists = [
+                ['position.x'],
+                ['position.x', 'position.y'],
+                ['position.x', 'position.y', 'position.z'],
+            ]
+
+            this.properties = propertiesLists[this.path[0].length - 1]
+        } else {
+            this.properties = []
         }
     }
 

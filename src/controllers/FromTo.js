@@ -1,7 +1,6 @@
 import { Core } from "../core/Core"
 
 export class FromTo extends Core {
-
   static DEFAULTS = {
     ...Core.DEFAULTS,
     dynamic: false, // в динамическом состоянии можно обновлять значения from и to во время анимации
@@ -18,13 +17,7 @@ export class FromTo extends Core {
     if (this.target) {
       this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
       this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
-
-      if (this.settings.dynamic) {
-        this._updateFromTo = this._updateDynamic
-      } else {
-        this._recreateLerps()
-        this._updateFromTo = this._updateStatic
-      }
+      this._recreateLerps()
     } else {
       this._updateFromTo = Core._noop
       this._from = {}
@@ -45,11 +38,22 @@ export class FromTo extends Core {
     return origTarget
   }
 
-  _createLerpStep(target, objFrom, objTo, propName) {
-    const staticDelta = objTo[propName] - objFrom[propName]
+  _lerp(a, b, t) {
+      return a + (b - a) * t
+  }
 
-    return () => {
-      target[propName] = objFrom[propName] + staticDelta * this.easeValue
+  _createLerpStep(target, objFrom, objTo, propName) {
+    if (this.settings.dynamic) {
+      return () => {
+        target[propName] = this._lerp(objFrom[propName], objTo[propName], this.easeValue)
+      }
+    } else {
+      const objFromProperty = objFrom[propName]
+      const staticDelta = objTo[propName] - objFromProperty
+
+      return () => {
+        target[propName] = objFromProperty + staticDelta * this.easeValue
+      }
     }
   }
 
@@ -71,16 +75,8 @@ export class FromTo extends Core {
     this._updateFromTo()
   }
 
-  _updateStatic() {
+  _updateFromTo() {
     this._lerps.forEach(lerpStep => lerpStep())
-  }
-
-  _updateDynamic(target = this.target, from = this._from, to = this._to) {
-    for (const key in to) {
-      typeof to[key] === 'object'
-        ? this._updateDynamic(target[key], from[key], to[key])
-        : target[key] = from[key] + (to[key] - from[key]) * this.easeValue
-    }
   }
 
   from(from = {}) {
@@ -97,7 +93,7 @@ export class FromTo extends Core {
 
   swap() {
     [this._from, this._to] = [this._to, this._from]
-    if (!this.settings.dynamic) this._recreateLerps()
+    this._recreateLerps()
     return this
   }
 }
