@@ -1,8 +1,0 @@
-export { Core } from './src/core/Core'
-export { Curve } from './src/controllers/Curve'
-export { FromTo } from './src/controllers/FromTo'
-export { Notifier } from './src/emitter/Notifier'
-export { DEFAULTS } from './src/core/defaults'
-export { easings } from './src/behaviors/easings'
-export { EVENTS } from './src/core/events'
-export { modes } from './src/behaviors/modes'
