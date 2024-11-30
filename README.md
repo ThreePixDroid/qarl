@@ -117,3 +117,51 @@ const qarl2 = qarlManager.create({
 
 // qarlManager.update(dt)
 ```
+
+## Play Animation Instantly example
+
+
+```js
+const cube3 = new THREE.Mesh(
+  new THREE.BoxGeometry(),
+  new THREE.MeshBasicMaterial({ color: 0xff00ff })
+)
+
+QARL.play({
+    target: cube3,
+    loop: true,
+    time: 10000,
+    mode: QARL.modes.yoyo,
+    easing: QARL.easings.inOutBack,
+    smoothing: 10,
+    // properties: ['position.x', 'position.y', 'position.z'], // default properties
+    points: [
+        [-2, -2, 0],
+        [ 2, -2, 0],
+        [ 2,  0, 1],
+        [-2,  0, 1],
+        [-2,  2, 0],
+        [ 2,  2, 0],
+    ],
+})
+
+// or
+
+const cube3clone = cube3.clone()
+
+QARL.play({
+    target: cube3,
+    dynamic: true,
+    loop: true,
+    time: 3000,
+    mode: QARL.modes.pingPong, // bounce, yoyo, pingPong
+    easing: QARL.easings.outQuad,
+    from: { rotation: { x: 1, y: 2 }, position: { x: 2, z: 2 }, scale: { x: .01, y: 1, z: 1 } },
+    to: { rotation: { x: 3, y: -5 }, position: { x: -2, z: -2 }, scale: { x: 3, y: .5, z: .5 } },
+})
+
+// async
+
+await QARL.play({ /*... config ...*/ }, true)
+
+```
