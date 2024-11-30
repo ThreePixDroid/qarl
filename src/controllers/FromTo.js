@@ -14,15 +14,12 @@ export class FromTo extends Core {
   }
 
   _processFromTo() {
-    if (this.target) {
-      this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
-      this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
-      this._recreateLerps()
-    } else {
-      this._updateFromTo = Core._noop
-      this._from = {}
-      this._to = {}
-    }
+    this._lerps = []
+    if (!this.target) return
+
+    this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
+    this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
+    this._createLerps()
   }
 
   _createState(origPattern = {}, origSource = {}, origTarget = {}) {
@@ -39,7 +36,7 @@ export class FromTo extends Core {
   }
 
   _lerp(a, b, t) {
-      return a + (b - a) * t
+    return a + (b - a) * t
   }
 
   _createLerpStep(target, objFrom, objTo, propName) {
@@ -57,11 +54,6 @@ export class FromTo extends Core {
     }
   }
 
-  _recreateLerps() {
-    this._lerps = []
-    this._createLerps()
-  }
-
   _createLerps(target = this.target, from = this._from, to = this._to) {
     for (const key in to) {
       typeof to[key] === 'object'
@@ -72,28 +64,23 @@ export class FromTo extends Core {
 
   _update() {
     super._update()
-    this._updateFromTo()
-  }
-
-  _updateFromTo() {
-    this._lerps.forEach(lerpStep => lerpStep())
+    for (const callback of this._lerps) {
+      callback()
+    }
   }
 
   from(from = {}) {
     this.tweak({ from })
-    this._processFromTo()
     return this
   }
 
   to(to = {}) {
     this.tweak({ to })
-    this._processFromTo()
     return this
   }
 
   swap() {
-    [this._from, this._to] = [this._to, this._from]
-    this._recreateLerps()
+    this.tweak({ from: this.settings.to, to: this.settings.from })
     return this
   }
 }
