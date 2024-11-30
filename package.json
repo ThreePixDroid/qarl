@@ -1,10 +1,10 @@
 {
   "name": "qarl",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "simple animation library",
-  "main": "index.js",
+  "module": "dist/qarl.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/ThreePixDroid/qarl/issues"
   },
-  "homepage": "https://github.com/ThreePixDroid/qarl#readme"
+  "homepage": "https://github.com/ThreePixDroid/qarl#readme",
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "vite": "^6.0.1"
+  }
 }
