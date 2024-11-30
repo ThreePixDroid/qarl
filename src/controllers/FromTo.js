@@ -26,7 +26,7 @@ export class FromTo extends Core {
     const _copyProperty = (pattern, source, target) => {
       for (const key in pattern) {
         typeof pattern[key] === 'object'
-          ? target[key] = {} && _copyProperty(pattern[key], source[key], target[key])
+          ? (target[key] = {}, _copyProperty(pattern[key], source[key], target[key]))
           : target[key] = source[key]
       }
     }
