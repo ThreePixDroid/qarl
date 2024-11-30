@@ -153,7 +153,7 @@ export class Core extends EventEmitter {
     _complete() {
         if (this.repeat-- > 0) {
             this._repeat();
-
+            
         } else {
             this._resolve();
             this.stop(false);

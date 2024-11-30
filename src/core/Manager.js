@@ -1,4 +1,5 @@
 import * as QARL from "../index.js";
+import { getCreator } from "./play.js";
 
 class Manager {
   constructor() {
@@ -7,16 +8,8 @@ class Manager {
   }
 
   create(config) {
-    if (!config.creator && !config.points && !(config.from || config.to)) {
-      throw new Error("Invalid animation config");
-    }
-
-    const animation = config.creator
-      ? new config.creator(config, this)
-      : config.points
-        ? new QARL.Curve(config, this)
-        : new QARL.FromTo(config, this);
-
+    const creator = getCreator(config);
+    const animation = new creator(config, this);
 
     this.add(animation);
 
