@@ -1,13 +1,14 @@
-import { easings } from '../behaviors/easings'
-
 /**
- * @property {Object} DEFAULTS - Default settings.
- * @property {number} DEFAULTS.time - Animation duration.
- * @property {boolean} DEFAULTS.loop - Flag for infinite looping.
- * @property {function} DEFAULTS.easing - Function for controlling the animation effect.
- * @property {boolean} DEFAULTS.reversed - Flag for playing the animation in reverse.
- * @property {number} DEFAULTS.repeat - Number of animation repetitions.
- * @property {number} DEFAULTS.delay - Delay before the animation starts.
+ * Default configuration options for animations.
+ * @property {number} time - Duration of the animation in milliseconds.
+ * @property {boolean} loop - Whether the animation should loop indefinitely.
+ * @property {function|null} mode - Custom function to modify the easing behavior (optional).
+ * @property {number} delay - Delay before the animation starts, in milliseconds.
+ * @property {number} repeat - Number of times to repeat the animation (0 means no repeat).
+ * @property {*} target - The target object or value for the animation.
+ * @property {function} easing - Easing function to use for the animation.
+ * @property {boolean} reversed - Whether the animation should play in reverse.
+ * @property {number} repeatDelay - Delay between repetitions of the animation, in milliseconds.
  */
 export const DEFAULTS = {
   time: 0,
@@ -16,7 +17,7 @@ export const DEFAULTS = {
   delay: 0,
   repeat: 0,
   target: null,
-  easing: easings.linear,
+  easing: t => t,
   reversed: false,
   repeatDelay: 0,
-}
+};
