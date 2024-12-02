@@ -30,7 +30,7 @@ const cube3 = new THREE.Mesh(
 
 const fromToAnim = new QARL.FromTo({
     target: cube3,
-    dynamic: true,
+    dynamic: true, // default false - to bake from and to
     loop: true,
     time: 3000,
     mode: QARL.modes.pingPong, // bounce, yoyo, pingPong
@@ -38,6 +38,8 @@ const fromToAnim = new QARL.FromTo({
     from: { rotation: { x: 1, y: 2 }, position: { x: 2, z: 2 }, scale: { x: .01, y: 1, z: 1 } },
     to: { rotation: { x: 3, y: -5 }, position: { x: -2, z: -2 }, scale: { x: 3, y: .5, z: .5 } },
 })
+
+// fromToAnim.play()
 
 // fromToAnim.step(dt)
 ```
@@ -50,6 +52,8 @@ const cube3 = new THREE.Mesh(
   new THREE.MeshBasicMaterial({ color: 0xff00ff })
 )
 
+//  default mode
+
 const curveAnim = new QARL.Curve({
     target: cube3,
     loop: true,
@@ -57,16 +61,59 @@ const curveAnim = new QARL.Curve({
     mode: QARL.modes.yoyo,
     easing: QARL.easings.inOutBack,
     smoothing: 10,
-    properties: ['position.x', 'position.y', 'position.z', 'scale.x', 'scale.y', 'scale.z'],
+    
+    // position.x
     points: [
-        [-2, -2, 0, .1, .5, .5],
-        [ 2, -2, 0, .5, .2, .2],
-        [ 2,  0, 1, .1, .5, .5],
-        [-2,  0, 1, .5, .2, .2],
-        [-2,  2, 0, .1, .5, .5],
-        [ 2,  2, 0, .5, .2, .2],
+        [-2],
+        [ 2],
+        [ 2],
+        [-2],
+        [-2],
+        [ 2],
+    ],
+
+    // or position.x and position.y
+    // points: [
+    //     [-2, -2],
+    //     [ 2, -2],
+    //     [ 2,  0],
+    //     [-2,  0],
+    //     [-2,  2],
+    //     [ 2,  2],
+    // ],
+
+    // or position.x, position.y and position.z
+    // points: [
+    //     [-2, -2,  0,],
+    //     [ 2, -2,  0,],
+    //     [ 2,  0,  1,],
+    //     [-2,  0,  1,],
+    //     [-2,  2,  0,],
+    //     [ 2,  2,  0,],
+    // ],
+})
+
+// or custome mode
+
+const curveAnim = new QARL.Curve({
+    target: cube3,
+    loop: true,
+    time: 10000,
+    mode: QARL.modes.yoyo,
+    easing: QARL.easings.inOutBack,
+    smoothing: 10,
+    properties: ['position.z', 'scale.y', 'scale.z', 'position.x'], // custom properties order
+    points: [
+        [0, .5, .5, -2,],
+        [0, .2, .2,  2,],
+        [1, .5, .5,  2,],
+        [1, .2, .2, -2,],
+        [0, .5, .5, -2,],
+        [0, .2, .2,  2,],
     ],
 })
+
+// curveAnim.play()
 
 // curveAnim.step(dt)
 ```
@@ -105,8 +152,7 @@ const qarl1 = qarlManager.create({
 const cube3clone = cube3.clone()
 
 const qarl2 = qarlManager.create({
-    target: cube3,
-    dynamic: true,
+    target: cube3clone,
     loop: true,
     time: 3000,
     mode: QARL.modes.pingPong, // bounce, yoyo, pingPong
@@ -150,18 +196,17 @@ QARL.play({
 const cube3clone = cube3.clone()
 
 QARL.play({
-    target: cube3,
-    dynamic: true,
+    target: cube3clone,
     loop: true,
     time: 3000,
-    mode: QARL.modes.pingPong, // bounce, yoyo, pingPong
-    easing: QARL.easings.outQuad,
+    mode: QARL.modes.bounce,
+    easing: QARL.easings.inOutSine,
     from: { rotation: { x: 1, y: 2 }, position: { x: 2, z: 2 }, scale: { x: .01, y: 1, z: 1 } },
     to: { rotation: { x: 3, y: -5 }, position: { x: -2, z: -2 }, scale: { x: 3, y: .5, z: .5 } },
 })
 
 // async
 
-await QARL.play({ /*... config ...*/ }, true)
+await QARL.play({ /*... config ...*/ }, true) // true for async
 
 ```
