@@ -1,6 +1,7 @@
 import { Core } from "../core/Core"
 
 export class FromTo extends Core {
+
   static DEFAULTS = {
     ...Core.DEFAULTS,
     dynamic: false, // в динамическом состоянии можно обновлять значения from и to во время анимации
@@ -15,11 +16,16 @@ export class FromTo extends Core {
 
   _processFromTo() {
     this._lerps = []
+
     if (!this.target) return
 
-    this._from = this.settings.from || this._createState(this.settings.to || {}, this.target)
-    this._to = this.settings.to || this._createState(this.settings.from || {}, this.target)
+    this._setupStates()
     this._createLerps()
+  }
+
+  _setupStates() {
+    this._from = this.settings.from || this._createState(this.settings.to || {}, this.target);
+    this._to = this.settings.to || this._createState(this.settings.from || {}, this.target);
   }
 
   _createState(origPattern = {}, origSource = {}, origTarget = {}) {
@@ -35,15 +41,12 @@ export class FromTo extends Core {
     return origTarget
   }
 
-  _lerp(a, b, t) {
-    return a + (b - a) * t
-  }
-
   _createLerpStep(target, objFrom, objTo, propName) {
     if (this.settings.dynamic) {
       return () => {
-        target[propName] = this._lerp(objFrom[propName], objTo[propName], this.easeValue)
+        target[propName] = Core.lerp(objFrom[propName], objTo[propName], this.easeValue)
       }
+
     } else {
       const objFromProperty = objFrom[propName]
       const staticDelta = objTo[propName] - objFromProperty
@@ -51,6 +54,7 @@ export class FromTo extends Core {
       return () => {
         target[propName] = objFromProperty + staticDelta * this.easeValue
       }
+
     }
   }
 

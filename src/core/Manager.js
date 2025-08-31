@@ -1,4 +1,3 @@
-import * as QARL from "../index.js";
 import { getCreator } from "./play.js";
 
 class Manager {
@@ -27,12 +26,12 @@ class Manager {
   }
 
   getAllAnimations() {
-    return Array.from(this.allAnimations.values()); 
+    return Array.from(this.allAnimations.values());
   }
 
   remove({ index } = {}) {
     if (!index) return;
-    
+
     this.activeAnimations.delete(index);
     this.allAnimations.delete(index);
   }

@@ -20,11 +20,11 @@ export const modes = {
    * @returns {number} Измененное значение времени для эффекта пинг-понг.
    */
   pingPong: function (t) {
-      return t <= 0.5
-          ? this._easing(t * 2)
-          : 1 - this._easing((t - 0.5) * 2)
+    return t <= 0.5
+      ? this._easing(t * 2)
+      : 1 - this._easing((t - 0.5) * 2)
   },
-  
+
   /**
    * Реализует эффект зеркального отражения анимации.
    * @private
@@ -32,7 +32,7 @@ export const modes = {
    * @returns {number} Измененное значение времени для эффекта зеркального отражения.
    */
   yoyo: function (t) {
-      return this._easing(easings.yoyo(t))
+    return this._easing(easings.yoyo(t))
   },
 
   /**
@@ -42,6 +42,6 @@ export const modes = {
    * @returns {number} Измененное значение времени для эффекта отскока.
    */
   bounce: function (t) {
-      return easings.yoyo(this._easing(t))
+    return easings.yoyo(this._easing(t))
   },
 }
