@@ -1,4 +1,4 @@
-import { getCreator } from "./play.js";
+import { getCreator } from "./getCreator.js";
 
 class Manager {
   constructor() {
@@ -6,16 +6,24 @@ class Manager {
     this.allAnimations = new Map();
   }
 
-  create(config) {
+  create({ on = {}, once = {}, ...config}) {
     const creator = getCreator(config);
     const animation = new creator(config, this);
+
+    Object.keys(on).forEach((event) => {
+      animation.on(event, on[event]);
+    });
+
+    Object.keys(once).forEach((event) => {
+      animation.once(event, once[event]);
+    });
 
     this.add(animation);
 
     return animation;
   }
 
-  update(dt) {
+  update = (dt) => {
     this.activeAnimations.forEach((animation) => {
       animation.step(dt);
     });
@@ -62,3 +70,4 @@ class Manager {
 }
 
 export { Manager };
+export const GlobalManager = new Manager();

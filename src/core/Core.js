@@ -1,6 +1,8 @@
 import EventEmitter from 'eventemitter3';
 import { DEFAULTS } from "./defaults";
 import { EVENTS } from "./events";
+import { easings } from "../behaviors/easings";
+import { modes } from "../behaviors/modes";
 
 let index = 0;
 
@@ -57,6 +59,11 @@ export class Core extends EventEmitter {
    * @private
    */
   static mergeConfigs(target, source) {
+    // Проверка на циклические ссылки
+    if (target === source) {
+      return;
+    }
+
     Object.keys(source).forEach((key) => {
       if (typeof source[key] === 'object' && source[key] !== null) {
         if (!target[key] || typeof target[key] !== 'object') {
@@ -81,6 +88,7 @@ export class Core extends EventEmitter {
     super();
 
     this.index = index++;
+    this.overrides = overrides;
 
     this.settings = {};
     this.reset(overrides);
@@ -111,12 +119,15 @@ export class Core extends EventEmitter {
    * @private
    */
   _refreshDynamicProps() {
-    const { target, time, repeat, loop, reversed, delay, easing } = this.settings;
+    this.applyProcessors(this.settings);
+
+    const { target, time, repeat, loop, reversed, delay } = this.settings;
     this.target = target;
     this.time = Math.max(time, 0);
     this.repeat = repeat > 0 ? repeat : loop ? Infinity : 0;
     this.reversed = reversed;
     this.remainingDelay = delay;
+
     this._processEasing();
   }
 
@@ -125,8 +136,19 @@ export class Core extends EventEmitter {
    * @private
    */
   _processEasing() {
-    this._easing = this.reversed ? this._reversedEasing.bind(this) : this.settings.easing;
-    this._calculateEasing = this.settings.mode ? this.settings.mode.bind(this) : this._easing;
+    // Поддержка строк для easing
+    const easing = typeof this.settings.easing === 'string'
+      ? easings[this.settings.easing] || easings.linear
+      : this.settings.easing;
+
+    this._easing = this.reversed ? this._reversedEasing : easing;
+
+    // Поддержка строк для mode
+    const mode = typeof this.settings.mode === 'string'
+      ? modes[this.settings.mode]
+      : this.settings.mode;
+
+    this._calculateEasing = mode ? mode.bind(this) : this._easing;
   }
 
   /**
@@ -135,7 +157,7 @@ export class Core extends EventEmitter {
    * @returns {number} Easing result for the reversed direction.
    * @private
    */
-  _reversedEasing(t) {
+  _reversedEasing = (t) => {
     return this.settings.easing(1 - t);
   }
 
@@ -154,13 +176,13 @@ export class Core extends EventEmitter {
    * @param {number} deltaTime - Time passed since the last step.
    * @private
    */
-  _stepDelay(deltaTime) {
+  _stepDelay = (deltaTime) => {
     this.remainingDelay -= deltaTime;
     this.lastDeltaTime = deltaTime;
 
     if (this.remainingDelay > 0) return;
 
-    this.step = this._stepTime.bind(this);
+    this.step = this._stepTime;
     this.step(Math.abs(this.remainingDelay));
     this.remainingDelay = this.settings.delay;
   }
@@ -170,7 +192,7 @@ export class Core extends EventEmitter {
    * @param {number} [deltaTime=0] - Time passed since the last step.
    * @private
    */
-  _stepTime(deltaTime = 0) {
+  _stepTime = (deltaTime = 0) => {
     this.elapsedTime += deltaTime;
     this.lastDeltaTime = deltaTime;
 
@@ -210,7 +232,7 @@ export class Core extends EventEmitter {
     this.remainingDelay = this.settings.repeatDelay;
     this.elapsedTime = 0;
     if (this.remainingDelay > 0) {
-      this.step = this._stepDelay.bind(this);
+      this.step = this._stepDelay;
     }
     this._update();
     withEvent && this.emit(EVENTS.REPEAT);
@@ -225,6 +247,12 @@ export class Core extends EventEmitter {
     this.settings = { ...this.constructor.DEFAULTS, ...newSettings };
     this._processState();
     return this;
+  }
+
+  applyProcessors(settings = this.settings) {
+    settings.processors.forEach((processor) => {
+      Core.mergeConfigs(settings, processor.call(this, settings) || {});
+    });
   }
 
   /**

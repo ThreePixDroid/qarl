@@ -11,6 +11,7 @@
  * @property {number} repeatDelay - Delay between repetitions of the animation, in milliseconds.
  */
 export const DEFAULTS = {
+  processors: [],
   time: 0,
   loop: false,
   mode: null,

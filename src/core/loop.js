@@ -1,24 +1,57 @@
-import { EVENTS } from "./events";
+class Loop {
+  constructor(callback, options = {}) {
+    this.callback = callback;
+    this.options = {
+      maxDeltaTime: 100, // максимальный deltaTime в ms
+      ...options
+    };
 
-function loop(animation) {
-  let lastTime = 0;
-  let complete = false;
+    this.isRunning = false;
+    this.lastTime = 0;
+    this.animationId = null;
+  }
 
-  animation.once(EVENTS.COMPLETE, () => {
-    complete = true;
-  });
+  static start(callback, options = {}) {
+    const loop = new Loop(callback, options);
+    loop.start();
+    return loop;
+  }
 
-  const loop = (time) => {
-    const dt = (time - lastTime)
-    lastTime = time;
-    animation.step(dt);
-    !complete && requestAnimationFrame(loop);
-  };
+  start() {
+    if (this.isRunning) return;
 
-  requestAnimationFrame((time) => {
-    lastTime = time;
-    loop(time);
-  });
+    this.isRunning = true;
+
+    const loop = (time) => {
+      if (!this.isRunning) return;
+
+      const dt = Math.min(time - this.lastTime, this.options.maxDeltaTime);
+      this.lastTime = time;
+
+      this.callback(dt);
+
+      if (this.isRunning) {
+        this.animationId = requestAnimationFrame(loop);
+      }
+    };
+
+    requestAnimationFrame((time) => {
+      this.lastTime = time;
+      loop(time);
+    });
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+
+  get running() {
+    return this.isRunning;
+  }
 }
 
-export default loop;
+export { Loop };
