@@ -41,7 +41,6 @@ export class FromTo extends Core {
     return a + (b - a) * t
   }
 
-  // Определение метода _recreateLerps
   _recreateLerps() {
     this._createLerps()
   }
@@ -100,5 +99,3 @@ export class FromTo extends Core {
     return this
   }
 }
-
-

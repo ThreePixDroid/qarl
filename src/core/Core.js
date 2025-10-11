@@ -59,7 +59,6 @@ export class Core extends EventEmitter {
    * @private
    */
   static mergeConfigs(target, source) {
-    // Проверка на циклические ссылки
     if (target === source) {
       return;
     }
@@ -136,14 +135,12 @@ export class Core extends EventEmitter {
    * @private
    */
   _processEasing() {
-    // Поддержка строк для easing
     const easing = typeof this.settings.easing === 'string'
       ? easings[this.settings.easing] || easings.linear
       : this.settings.easing;
 
     this._easing = this.reversed ? this._reversedEasing : easing;
 
-    // Поддержка строк для mode
     const mode = typeof this.settings.mode === 'string'
       ? modes[this.settings.mode]
       : this.settings.mode;

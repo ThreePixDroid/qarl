@@ -61,7 +61,6 @@ const curveAnim = new QARL.Curve({
     mode: QARL.modes.yoyo,
     easing: QARL.easings.inOutBack,
     smoothing: 10,
-
     // position.x
     points: [
         [-2],
@@ -216,7 +215,6 @@ await QARL.play({ /*... config ...*/ }, true) // true for async
 ```js
 import { GlobalManager, Loop } from 'qarl';
 
-// Создаем объекты для анимации
 const cube = new THREE.Mesh(
   new THREE.BoxGeometry(),
   new THREE.MeshBasicMaterial({ color: 0xff6b6b })
@@ -227,7 +225,6 @@ const sphere = new THREE.Mesh(
   new THREE.MeshBasicMaterial({ color: 0x4ecdc4 })
 );
 
-// Анимация куба с поворотом
 const cubeAnimation = GlobalManager.create({
     target: cube,
     time: 2000,
@@ -238,7 +235,6 @@ const cubeAnimation = GlobalManager.create({
     mode: 'pingPong'
 });
 
-// Анимация сферы с движением и масштабированием
 const sphereAnimation = GlobalManager.create({
     target: sphere,
     time: 3000,
@@ -254,19 +250,10 @@ const sphereAnimation = GlobalManager.create({
     loop: true,
 });
 
-// Запускаем анимации
 cubeAnimation.play();
 sphereAnimation.play();
 
-// Создаем игровой цикл
-const gameLoop = Loop.start((dt) => {
-    // Обновляем все анимации через GlobalManager
-    GlobalManager.update(dt);
+const gameLoop = Loop.start(GlobalManager.update);
 
-    // Ваша игровая логика здесь
-    // renderer.render(scene, camera);
-});
-
-// Остановка цикла (если нужно)
 // Loop.stop(gameLoop);
 ```

@@ -1,11 +1,11 @@
 import { easings } from "./easings"
 
 /**
-     * Объект, содержащий модификаторы анимации.
+     * Object containing animation modifiers.
      * @namespace
-     * @property {function} pingPong - Реализует пинг-понг эффект для анимации.
-     * @property {function} yoyo - Реализует эффект зеркального отражения анимации.
-     * @property {function} bounce - Реализует эффект отскока для анимации.
+     * @property {function} pingPong - Implements ping-pong effect for animation.
+     * @property {function} yoyo - Implements mirror reflection effect for animation.
+     * @property {function} bounce - Implements bounce effect for animation.
      * @example
      * const animation = new Core({ time: 1000, mode: modes.pingPong })
      * animation.play()
@@ -14,9 +14,9 @@ import { easings } from "./easings"
      */
 export const modes = {
   /**
-   * Реализует пинг-понг эффект для анимации.
-   * @param {number} t - Текущее время анимации.
-   * @returns {number} Измененное значение времени для эффекта пинг-понг.
+   * Implements ping-pong effect for animation.
+   * @param {number} t - Current animation time.
+   * @returns {number} Modified time value for ping-pong effect.
    */
   pingPong: function (t) {
     return t <= 0.5
@@ -25,18 +25,18 @@ export const modes = {
   },
 
   /**
-   * Реализует эффект зеркального отражения анимации.
-   * @param {number} t - Текущее время анимации.
-   * @returns {number} Измененное значение времени для эффекта зеркального отражения.
+   * Implements mirror reflection effect for animation.
+   * @param {number} t - Current animation time.
+   * @returns {number} Modified time value for mirror reflection effect.
    */
   yoyo: function (t) {
     return this._easing(easings.yoyo(t))
   },
 
   /**
-   * Реализует эффект отскока для анимации.
-   * @param {number} t - Текущее время анимации.
-   * @returns {number} Измененное значение времени для эффекта отскока.
+   * Implements bounce effect for animation.
+   * @param {number} t - Current animation time.
+   * @returns {number} Modified time value for bounce effect.
    */
   bounce: function (t) {
     return easings.yoyo(this._easing(t))

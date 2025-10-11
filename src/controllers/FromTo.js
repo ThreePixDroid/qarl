@@ -4,7 +4,7 @@ export class FromTo extends Core {
 
   static DEFAULTS = {
     ...Core.DEFAULTS,
-    dynamic: false, // в динамическом состоянии можно обновлять значения from и to во время анимации
+    dynamic: false, // in dynamic state you can update from and to values during animation
     from: null,
     to: null
   }

@@ -2,7 +2,7 @@ class Loop {
   constructor(callback, options = {}) {
     this.callback = callback;
     this.options = {
-      maxDeltaTime: 100, // максимальный deltaTime в ms
+      maxDeltaTime: 100,
       ...options
     };
 

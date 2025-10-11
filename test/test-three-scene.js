@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GlobalManager, Loop } from '../src/index.js';
+import { Manager, GlobalManager, Loop } from '../src/index.js';
+
+const manager = new Manager();
 
 class ThreeScene {
     constructor() {
@@ -19,11 +21,11 @@ class ThreeScene {
     }
 
     init() {
-        // Создаем сцену
+        // Create scene
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x111111);
 
-        // Создаем камеру
+        // Create camera
         this.camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
@@ -32,7 +34,7 @@ class ThreeScene {
         );
         this.camera.position.set(0, 0, 5);
 
-        // Создаем рендерер
+        // Create renderer
         this.renderer = new THREE.WebGLRenderer({
             canvas: document.getElementById('canvas'),
             antialias: true
@@ -41,33 +43,33 @@ class ThreeScene {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // Добавляем OrbitControls
+        // Add OrbitControls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
 
-        // Создаем освещение
+        // Setup lighting
         this.setupLighting();
 
-        // Создаем объекты
+        // Create objects
         this.createObjects();
 
-        // Обработка изменения размера окна
+        // Handle window resize
         window.addEventListener('resize', () => this.onWindowResize());
     }
 
     setupLighting() {
-        // Основной свет
+        // Ambient light
         const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
         this.scene.add(ambientLight);
 
-        // Направленный свет
+        // Directional light
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
         directionalLight.position.set(10, 10, 5);
         directionalLight.castShadow = true;
         this.scene.add(directionalLight);
 
-        // Точечный свет
+        // Point light
         const pointLight = new THREE.PointLight(0x4CAF50, 0.6, 100);
         pointLight.position.set(-5, 5, 5);
         this.scene.add(pointLight);
@@ -76,7 +78,7 @@ class ThreeScene {
     }
 
     createObjects() {
-        // Куб
+        // Cube
         const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
         const cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff6b6b });
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
@@ -86,7 +88,7 @@ class ThreeScene {
         this.scene.add(cube);
         this.objects.cube = cube;
 
-        // Сфера
+        // Sphere
         const sphereGeometry = new THREE.SphereGeometry(0.7, 32, 32);
         const sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x4ecdc4 });
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -96,7 +98,7 @@ class ThreeScene {
         this.scene.add(sphere);
         this.objects.sphere = sphere;
 
-        // Тор
+        // Torus
         const torusGeometry = new THREE.TorusGeometry(0.6, 0.2, 16, 100);
         const torusMaterial = new THREE.MeshLambertMaterial({ color: 0x45b7d1 });
         const torus = new THREE.Mesh(torusGeometry, torusMaterial);
@@ -106,7 +108,7 @@ class ThreeScene {
         this.scene.add(torus);
         this.objects.torus = torus;
 
-        // Плоскость (пол)
+        // Plane (floor)
         const planeGeometry = new THREE.PlaneGeometry(20, 20);
         const planeMaterial = new THREE.MeshLambertMaterial({ color: 0x333333 });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -116,50 +118,50 @@ class ThreeScene {
         this.scene.add(plane);
         this.objects.plane = plane;
 
-        // Стрелка
+        // Arrow
         this.createArrow();
     }
 
     createArrow() {
-        // Создаем группу для стрелки
+        // Create arrow group
         const arrowGroup = new THREE.Group();
 
-        // Прямоугольник (основание стрелки)
+        // Rectangle (arrow shaft)
         const shaftGeometry = new THREE.BoxGeometry(0.5, 1.5, 0.1);
         const shaftMaterial = new THREE.MeshLambertMaterial({ color: 0xff4757 });
         const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
-        shaft.position.y = 0.5; // Поднимаем на половину высоты
+        shaft.position.y = 0.5; // Raise by half height
         shaft.castShadow = false;
         shaft.receiveShadow = false;
 
-        // Два прямоугольника для наконечника стрелки
+        // Two rectangles for arrow head
         const arrowMaterial = new THREE.MeshLambertMaterial({ color: 0xff4757 });
 
-        // Первый прямоугольник стрелки
+        // First arrow rectangle
         const arrowGeometry1 = new THREE.BoxGeometry(0.8, 0.3, 0.1);
         const arrow1 = new THREE.Mesh(arrowGeometry1, arrowMaterial);
         arrow1.position.set(0.2, 1.25, 0);
-        arrow1.rotation.z = -Math.PI / 4; // Поворачиваем на 30 градусов
+        arrow1.rotation.z = -Math.PI / 4; // Rotate 30 degrees
         arrow1.castShadow = false;
         arrow1.receiveShadow = false;
 
-        // Второй прямоугольник стрелки
+        // Second arrow rectangle
         const arrowGeometry2 = new THREE.BoxGeometry(0.8, 0.3, 0.1);
         const arrow2 = new THREE.Mesh(arrowGeometry2, arrowMaterial);
         arrow2.position.set(-0.2, 1.25, 0);
-        arrow2.rotation.z = Math.PI / 4; // Поворачиваем на -30 градусов
+        arrow2.rotation.z = Math.PI / 4; // Rotate -30 degrees
         arrow2.castShadow = false;
         arrow2.receiveShadow = false;
 
-        // Добавляем части в группу
+        // Add parts to group
         arrowGroup.add(shaft);
         arrowGroup.add(arrow1);
         arrowGroup.add(arrow2);
 
-        // Поворачиваем группу так, чтобы стрелка смотрела вниз
+        // Rotate group so arrow points down
         arrowGroup.rotation.x = Math.PI;
 
-        // Позиционируем стрелку
+        // Position arrow
         arrowGroup.position.set(5, 3, 0);
 
         this.scene.add(arrowGroup);
@@ -212,7 +214,7 @@ class ThreeScene {
 
     animateTorus() {
         const torus = this.objects.torus;
-        const animation = GlobalManager.create({
+        const animation = manager.create({
             target: torus.scale,
             time: 1500,
             from: { x: 1, y: 1, z: 1 },
@@ -233,9 +235,9 @@ class ThreeScene {
             time: 2000,
             properties: ['position.y', 'scale.y', 'rotation.y'],
             points: [
-                [3, 1, -Math.PI * 2],        // Начальная позиция - высоко, нормальный размер
-                [0, 0.5, 0],    // Опускается ниже и сжимается по Y (как мячик при ударе)
-                [3, 1, Math.PI * 2]         // Возвращается в исходное состояние
+                [3, 1, -Math.PI * 2],        // Initial position - high, normal size
+                [0, 0.5, 0],    // Goes down and compresses on Y (like ball on impact)
+                [3, 1, Math.PI * 2]         // Returns to initial state
             ],
             smoothing: 20,
             easing: 'inOutSine',
@@ -253,20 +255,17 @@ class ThreeScene {
     }
 
     startAnimationLoop() {
+        this.loop = Loop.start(GlobalManager.update);
+        this.loop = Loop.start(manager.update);
+
         this.loop = Loop.start((dt) => {
-            // Обновляем анимации через GlobalManager
-            GlobalManager.update(dt);
-
-            // Обновляем контролы камеры
             this.controls.update();
-
-            // Рендерим сцену
             this.renderer.render(this.scene, this.camera);
         });
     }
 }
 
-// Инициализация при загрузке страницы
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     new ThreeScene();
 });
