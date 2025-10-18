@@ -37,6 +37,11 @@ export class Core extends EventEmitter {
     return this;
   }
 
+  onceComplete(...args) {
+    super.once(EVENTS.COMPLETE, ...args);
+    return this;
+  }
+
   /**
    * Default settings for the Core class.
    * @static
@@ -179,6 +184,7 @@ export class Core extends EventEmitter {
 
     if (this.remainingDelay > 0) return;
 
+    this.emit(EVENTS.BEGIN);
     this.step = this._stepTime;
     this.step(Math.abs(this.remainingDelay));
     this.remainingDelay = this.settings.delay;
