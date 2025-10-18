@@ -1,6 +1,6 @@
 {
   "name": "qarl",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "simple animation library",
   "main": "dist/qarl.es.min.js",
   "module": "dist/qarl.es.min.js",
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "webpack --mode=production",
-    "dev": "node kill-port.js && webpack serve --mode=development"
+    "dev": "node kill-port.js && webpack serve --mode=development",
+    "publish": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
