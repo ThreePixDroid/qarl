@@ -21,4 +21,5 @@ export const DEFAULTS = {
   easing: t => t,
   reversed: false,
   repeatDelay: 0,
+  autoApplyProcessors: false,
 };

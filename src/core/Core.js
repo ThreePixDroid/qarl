@@ -311,6 +311,10 @@ export class Core extends EventEmitter {
   play(withEvent = true) {
     if (this.isPlaying) return this;
 
+    if (this.settings.autoApplyProcessors) {
+      this._refreshDynamicProps();
+    }
+
     withEvent && this.emit(EVENTS.PLAY);
 
     if (this.remainingDelay > 0) {
