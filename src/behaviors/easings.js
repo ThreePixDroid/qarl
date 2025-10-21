@@ -9,7 +9,7 @@ export const easings = {
   yoyo: (t) => 1 - Math.abs(1 - t * 2),
 
   inQuad: (t) => pow(t, 2),
-  outQuad: (t) => t * (2 - t),
+  outQuad: (t) => 1 - (1 - t) * (1 - t),
   inOutQuad: (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
 
   inCubic: (t) => pow(t, 3),

@@ -1,6 +1,6 @@
 {
   "name": "qarl",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "description": "simple animation library",
   "main": "dist/qarl.es.min.js",
   "module": "dist/qarl.es.min.js",
