@@ -8,7 +8,7 @@ function getCreator(config) {
 
   } else if (config.creator) {
 
-    if (!(config.creator instanceof Core)) {
+    if (!(config.creator.prototype instanceof Core)) {
       console.error("Invalid creator provided. Using default creator.");
       return Core;
     }
