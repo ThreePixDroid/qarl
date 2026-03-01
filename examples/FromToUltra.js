@@ -1,6 +1,6 @@
-import { Core } from "../core/Core"
+import { Core } from "qarl"
 
-export class FromTo extends Core {
+export class FromToUltra extends Core {
   static DEFAULTS = {
     ...Core.DEFAULTS,
     dynamic: false,
