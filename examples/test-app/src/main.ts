@@ -137,6 +137,7 @@ class ThreeScene {
     const sphereAnim = GlobalManager.create({
       target: this.objects.sphere,
       time: 3000,
+      properties: ['position.x', 'position.y', 'position.z', 'scale.x', 'scale.y', 'scale.z'],
       points: [
         [0, 0, 0, 1, 1, 1],
         [1, 2, 0, 2, .5, 2],
@@ -164,6 +165,7 @@ class ThreeScene {
     const arrowAnim = GlobalManager.create({
       target: this.objects.arrow,
       time: 2000,
+      properties: ['position.y', 'scale.y', 'rotation.y'],
       points: [
         [3, 1, -Math.PI * 2],
         [0, 0.5, 0],
