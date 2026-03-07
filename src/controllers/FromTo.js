@@ -66,11 +66,11 @@ export class FromTo extends Core {
     }
   }
 
-  _update() {
-    super._update()
+  _applyUpdate() {
     for (const callback of this._lerps) {
       callback()
     }
+    super._applyUpdate()
   }
 
   from(from = {}) {

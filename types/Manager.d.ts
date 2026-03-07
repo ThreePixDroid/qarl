@@ -21,15 +21,15 @@ import { ManagerCreateConfig } from './common';
  * Loop.start(manager.update);
  */
 export class Manager {
-  /** Map of currently playing animations (index → animation). */
-  activeAnimations: Map<number, Core>;
+  /** Double-buffer: map iterated during the current frame. */
+  _current: Map<number, Core>;
 
-  /** Map of all registered animations, active or not (index → animation). */
-  allAnimations: Map<number, Core>;
+  /** Double-buffer: map accumulating animations for the next frame. */
+  _next: Map<number, Core>;
 
   /**
    * Create a new animation, auto-detecting the type (Core, FromTo, or Curve).
-   * The animation is registered in the Manager but not started — call `.play()`.
+   * The animation is not started — call `.play()`.
    *
    * Type detection:
    * - `config.points` → Curve
@@ -68,23 +68,6 @@ export class Manager {
   getActiveAnimations(): Core[];
 
   /**
-   * Get a snapshot array of all registered animations (active + inactive).
-   */
-  getAllAnimations(): Core[];
-
-  /**
-   * Remove an animation from both active and all lists by its index.
-   * @param animation - Object with an `index` property
-   */
-  remove(animation: { index?: number }): void;
-
-  /**
-   * Register an animation in the `allAnimations` map.
-   * Called automatically by `.create()`.
-   */
-  add(animation: Core): void;
-
-  /**
    * Move an animation to the active list (it will receive `.update()` calls).
    * Called automatically by `animation.play()` when a Manager is attached.
    */
@@ -102,7 +85,7 @@ export class Manager {
   stopAll(): void;
 
   /**
-   * Stop all animations and clear both active and all lists.
+   * Stop all animations and clear active lists.
    */
   removeAll(): void;
 }

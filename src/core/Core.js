@@ -168,8 +168,16 @@ export class Core extends EventEmitter {
    * @private
    */
   _update() {
+    this._computeProgress();
+    this._applyUpdate();
+  }
+
+  _computeProgress() {
     this.progress = this.elapsedTime / this.time;
     this.easeValue = this._calculateEasing(this.progress);
+  }
+
+  _applyUpdate() {
     this.emit(EVENTS.UPDATE, this);
   }
 

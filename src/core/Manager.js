@@ -2,8 +2,10 @@ import { getCreator } from "./getCreator.js";
 
 class Manager {
   constructor() {
-    this.activeAnimations = new Map();
-    this.allAnimations = new Map();
+    this._current = new Map();
+    this._next = new Map();
+    this._updating = false;
+    this._updated = new Set();
   }
 
   create({ on = {}, once = {}, ...config}) {
@@ -18,54 +20,51 @@ class Manager {
       animation.once(event, once[event]);
     });
 
-    this.add(animation);
-
     return animation;
   }
 
   update = (dt) => {
-    this.activeAnimations.forEach((animation) => {
+    this._updating = true;
+    this._updated.clear();
+
+    for (const [key, animation] of this._current) {
+      this._next.set(key, animation);
+      this._updated.add(key);
+      this._current.delete(key);
       animation.step(dt);
-    });
+    }
+
+    this._updating = false;
+    [this._current, this._next] = [this._next, this._current];
   }
 
   getActiveAnimations() {
-    return Array.from(this.activeAnimations.values());
-  }
-
-  getAllAnimations() {
-    return Array.from(this.allAnimations.values());
-  }
-
-  remove({ index } = {}) {
-    if (!index) return;
-
-    this.activeAnimations.delete(index);
-    this.allAnimations.delete(index);
-  }
-
-  add(animation) {
-    this.allAnimations.set(animation.index, animation);
+    return Array.from(this._current.values());
   }
 
   addToActive(animation) {
-    this.activeAnimations.set(animation.index, animation);
+    if (this._updating && this._updated.has(animation.index)) {
+      this._next.set(animation.index, animation);
+    } else {
+      this._current.set(animation.index, animation);
+    }
   }
 
   removeFromActive(animation) {
-    this.activeAnimations.delete(animation.index);
+    this._current.delete(animation.index);
+    this._next.delete(animation.index);
   }
 
   stopAll() {
-    this.activeAnimations.forEach((animation) => {
+    [...this._current.values()].forEach((animation) => {
       animation.stop();
-    })
+    });
   }
 
   removeAll() {
     this.stopAll();
-    this.activeAnimations.clear();
-    this.allAnimations.clear();
+    this._current.clear();
+    this._next.clear();
   }
 }
 

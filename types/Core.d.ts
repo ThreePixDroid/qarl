@@ -230,11 +230,6 @@ export class Core extends EventEmitter {
    */
   replay(withEvent?: boolean): this;
 
-  /**
-   * Remove this animation from its Manager (both active and all lists).
-   * Calls `.stop()` first.
-   */
-  remove(): void;
 
   /**
    * `true` if the animation is currently advancing (not paused/stopped).
