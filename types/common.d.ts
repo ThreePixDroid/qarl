@@ -117,7 +117,7 @@ export interface CoreSettings {
   /**
    * If `true`, processors are re-applied automatically before each `play()`.
    * If `false`, processors are only applied on `reset()`.
-   * @default true
+   * @default false
    */
   autoApplyProcessors: boolean;
 }

@@ -76,8 +76,7 @@ export class FromToUltra extends Core {
     this._updateFromTo = new Function(functionBody).bind(this)
   }
 
-  _update() {
-    super._update()
+  _applyValues() {
     this._updateFromTo()
   }
 
@@ -94,8 +93,7 @@ export class FromToUltra extends Core {
   }
 
   swap() {
-    [this._from, this._to] = [this._to, this._from]
-    this._recreateLerps()
+    this.tweak({ from: this.settings.to, to: this.settings.from })
     return this
   }
 }

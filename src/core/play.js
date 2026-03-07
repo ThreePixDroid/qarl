@@ -2,8 +2,8 @@ import { Loop } from "./Loop.js";
 import { getCreator } from "./getCreator.js";
 
 function play(config, async) {
-  const creator = new getCreator(config);
-  const animation = new creator(config);
+  const Creator = getCreator(config);
+  const animation = new Creator(config);
 
   Loop.start(animation.step.bind(animation));
 

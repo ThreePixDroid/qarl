@@ -135,8 +135,7 @@ export class Curve extends Core {
     )
   }
 
-  _applyUpdate() {
+  _applyValues() {
     this._setTargetProperties(this._getInterpolatedPosition())
-    super._applyUpdate()
   }
 }
