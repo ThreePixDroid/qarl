@@ -145,7 +145,7 @@ export class Core extends EventEmitter {
 
   /**
    * Manually apply all processor functions to the current settings.
-   * Called automatically if `autoApplyProcessors` is `true`.
+   * Called automatically if `autoApplyProcessors` is `false`.
    */
   applyProcessors(settings?: CoreSettings): void;
 

@@ -15,7 +15,7 @@ import { CoreSettings } from './common';
  *   easing: (t) => t,    // linear
  *   reversed: false,
  *   repeatDelay: 0,
- *   autoApplyProcessors: true,
+ *   autoApplyProcessors: false,
  * }
  * ```
  */
