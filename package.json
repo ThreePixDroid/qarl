@@ -1,6 +1,6 @@
 {
   "name": "qarl",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "simple animation library",
   "type": "module",
   "main": "./dist/index.js",

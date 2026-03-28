@@ -222,7 +222,7 @@ export class Core extends EventEmitter {
 		this._onBegin();
 		this._computeProgress();
 		this._applyValues();
-		this.emit(EVENTS.BEGIN);
+		this.emit(EVENTS.BEGIN, this);
 		this.step = this._stepTime;
 	}
 
@@ -259,7 +259,7 @@ export class Core extends EventEmitter {
 		} else {
 			this._resolve();
 			this.stop(false);
-			this.emit(EVENTS.COMPLETE);
+			this.emit(EVENTS.COMPLETE, this);
 
 		}
 	}
@@ -276,7 +276,7 @@ export class Core extends EventEmitter {
 			this.step = this._stepDelay;
 		}
 		this._update();
-		withEvent && this.emit(EVENTS.REPEAT);
+		withEvent && this.emit(EVENTS.REPEAT, this);
 	}
 
 	/**
@@ -353,7 +353,7 @@ export class Core extends EventEmitter {
 			this._refreshDynamicProps();
 		}
 
-		withEvent && this.emit(EVENTS.PLAY);
+		withEvent && this.emit(EVENTS.PLAY, this);
 
 		if (this.remainingDelay > 0) {
 			this.step = this._stepDelay;
@@ -389,7 +389,7 @@ export class Core extends EventEmitter {
 	stop(withEvent = true) {
 		this._resetState();
 
-		withEvent && this.emit(EVENTS.STOP);
+		withEvent && this.emit(EVENTS.STOP, this);
 
 		if (this.manager) {
 			this.manager.removeFromActive(this);
