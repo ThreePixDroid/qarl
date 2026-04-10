@@ -388,7 +388,6 @@ Example — one `FromTo` attached to one mesh: with **`autoApplyProcessors: true
 
 ```js
 const slideX = new QARL.FromTo({
-  ...QARL.FromTo.DEFAULTS,
   target: unitA,
   time: 500,
   easing: QARL.easings.outQuad,
