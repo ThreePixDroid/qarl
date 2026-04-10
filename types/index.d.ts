@@ -37,7 +37,14 @@ export { Loop } from './Loop';
 export { play } from './play';
 
 export type {
+  AnimationConstructor,
+  AnyAnimationPartial,
+  CoreAnimation,
+  CreateConfigCurve,
+  CreateConfigFromTo,
+  CreateConfigWithCreator,
   EasingFunction,
+  ManagerCreateTruthyTarget,
   ModeFunction,
   ProcessorFunction,
   CoreSettings,

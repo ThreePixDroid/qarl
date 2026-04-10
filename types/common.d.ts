@@ -1,6 +1,12 @@
 import { Core } from './Core';
 
 /**
+ * Any animation instance: `Core` or a subclass (`FromTo`, `Curve`, or a custom controller).
+ * Mixed lists (e.g. active animations) are typed as this alias; specific subclasses are lost unless you narrow.
+ */
+export type CoreAnimation = Core;
+
+/**
  * Easing function that maps progress `t` (0..1) to an output value.
  * Can accept additional parameters for parametric easings (e.g. `inBack(t, overshoot)`).
  *
@@ -35,7 +41,7 @@ export type ModeFunction = (this: Core, t: number) => number;
  *   return { delay: Math.random() * 1000 };
  * };
  */
-export type ProcessorFunction = (this: Core, settings: CoreSettings) => Partial<CoreSettings> | void;
+export type ProcessorFunction = (this: Core, settings: CoreSettings) => AnyAnimationPartial | void;
 
 /**
  * Base configuration for all animations.
@@ -190,6 +196,13 @@ export interface CurveSettings extends CoreSettings {
 }
 
 /**
+ * Partial merge of all animation settings (Core + FromTo + Curve).
+ * Use for constructors, `tweak()`, `play()`, etc. Do not use `Partial<CoreSettings | FromToSettings | CurveSettings>`:
+ * for unions, `Partial` only exposes keys shared by all members, so `from` / `to` / `points` disappear.
+ */
+export type AnyAnimationPartial = Partial<FromToSettings & CurveSettings>;
+
+/**
  * Options for the animation loop.
  */
 export interface LoopOptions {
@@ -206,7 +219,7 @@ export interface LoopOptions {
  * Combines CoreSettings with FromTo/Curve fields and event binding shortcuts.
  * The correct animation type (Core, FromTo, or Curve) is auto-detected.
  */
-export interface ManagerCreateConfig extends Partial<CoreSettings> {
+export interface ManagerCreateConfig extends AnyAnimationPartial {
   /**
    * Event listeners attached via `.on()` (persistent).
    *
@@ -223,30 +236,33 @@ export interface ManagerCreateConfig extends Partial<CoreSettings> {
    */
   once?: Record<string, (...args: any[]) => void>;
 
-  /** Starting values (triggers FromTo animation). */
-  from?: Record<string, any>;
-
-  /** Ending values (triggers FromTo animation). */
-  to?: Record<string, any>;
-
-  /** Keypoints (triggers Curve animation). */
-  points?: number[][];
-
-  /** Property paths for Curve animation. */
-  properties?: string[];
-
-  /** Smoothing for Curve animation. */
-  smoothing?: number;
-
-  /** Dynamic mode for FromTo animation. */
-  dynamic?: boolean;
-
   /**
    * Custom animation class to use instead of auto-detection.
-   * Must be a subclass of Core (e.g. a custom controller).
+   * Must extend `Core` at runtime (`prototype instanceof Core`).
    */
-  creator?: typeof Core;
+  creator?: AnimationConstructor;
 }
+
+export type AnimationConstructor<T extends Core = Core> = new (...args: any[]) => T;
+
+export type ManagerCreateTruthyTarget = object;
+
+export type CreateConfigWithCreator<T extends Core> = ManagerCreateConfig & {
+  creator: AnimationConstructor<T>;
+  target: ManagerCreateTruthyTarget;
+};
+
+export type CreateConfigCurve = ManagerCreateConfig & {
+  target: ManagerCreateTruthyTarget;
+  points: number[][];
+  creator?: undefined;
+};
+
+export type CreateConfigFromTo = ManagerCreateConfig & {
+  target: ManagerCreateTruthyTarget;
+  points?: undefined;
+  creator?: undefined;
+} & ({ from: Record<string, unknown> } | { to: Record<string, unknown> });
 
 /**
  * Built-in easing function names.

@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { CoreSettings, EasingFunction } from './common';
+import { AnyAnimationPartial, CoreSettings, EasingFunction } from './common';
 
 /**
  * Core — base animation class built on EventEmitter3.
@@ -39,7 +39,7 @@ export class Core extends EventEmitter {
   index: number;
 
   /** Original overrides passed to the constructor. */
-  overrides: Partial<CoreSettings>;
+  overrides: AnyAnimationPartial;
 
   /** Current resolved settings (defaults merged with overrides). */
   settings: CoreSettings;
@@ -71,6 +71,9 @@ export class Core extends EventEmitter {
   /** Delta time from the most recent `step()` call. */
   lastDeltaTime: number;
 
+  /** Promise used by `playPromise()`, or `null` when idle. */
+  promise: Promise<void> | null;
+
   /** The Manager this animation belongs to, if any. */
   manager?: import('./Manager').Manager;
 
@@ -78,7 +81,7 @@ export class Core extends EventEmitter {
    * @param overrides - Settings to merge on top of `Core.DEFAULTS`
    * @param manager - Optional Manager instance to auto-register with
    */
-  constructor(overrides?: Partial<CoreSettings>, manager?: import('./Manager').Manager);
+  constructor(overrides?: AnyAnimationPartial, manager?: import('./Manager').Manager);
 
   /**
    * Advance the animation by `deltaTime` milliseconds.
@@ -130,6 +133,16 @@ export class Core extends EventEmitter {
   onUpdate(fn: (animation: this) => void, context?: any): this;
 
   /**
+   * Shorthand for `.on('begin', fn)`. Returns `this` for chaining.
+   */
+  onBegin(fn: (animation: this) => void, context?: any): this;
+
+  /**
+   * Shorthand for `.once('begin', fn)`. Returns `this` for chaining.
+   */
+  onceBegin(fn: (animation: this) => void, context?: any): this;
+
+  /**
    * Shorthand for `.once('complete', fn)`. Returns `this` for chaining.
    * Callback fires once on the next complete, then is removed.
    */
@@ -141,7 +154,7 @@ export class Core extends EventEmitter {
    * @param newSettings - New settings to apply (defaults to `DEFAULTS`)
    * @returns `this` for chaining
    */
-  reset(newSettings?: Partial<CoreSettings>): this;
+  reset(newSettings?: AnyAnimationPartial): this;
 
   /**
    * Manually apply all processor functions to the current settings.
@@ -158,7 +171,7 @@ export class Core extends EventEmitter {
    *
    * @returns `this` for chaining
    */
-  tweak(newSettings?: Partial<CoreSettings>): this;
+  tweak(newSettings?: AnyAnimationPartial): this;
 
   /**
    * Jump to a specific time in the animation.

@@ -1,5 +1,13 @@
 import { Core } from './Core';
-import { ManagerCreateConfig } from './common';
+import { Curve } from './Curve';
+import { FromTo } from './FromTo';
+import {
+  CoreAnimation,
+  CreateConfigCurve,
+  CreateConfigFromTo,
+  CreateConfigWithCreator,
+  ManagerCreateConfig,
+} from './common';
 
 /**
  * Manager — creates, stores, and batch-updates animations.
@@ -22,20 +30,21 @@ import { ManagerCreateConfig } from './common';
  */
 export class Manager {
   /** Double-buffer: map iterated during the current frame. */
-  _current: Map<number, Core>;
+  _current: Map<number, CoreAnimation>;
 
   /** Double-buffer: map accumulating animations for the next frame. */
-  _next: Map<number, Core>;
+  _next: Map<number, CoreAnimation>;
 
   /**
    * Create a new animation, auto-detecting the type (Core, FromTo, or Curve).
    * The animation is not started — call `.play()`.
    *
-   * Type detection:
+   * Type detection (same as `getCreator`):
+   * - no truthy `target` → Core
+   * - `config.creator` → that class (must extend Core)
    * - `config.points` → Curve
    * - `config.from` or `config.to` → FromTo
    * - otherwise → Core
-   * - `config.creator` → custom class (must extend Core)
    *
    * Event binding shortcuts:
    * - `config.on` — persistent listeners (`.on()`)
@@ -51,7 +60,10 @@ export class Manager {
    * });
    * anim.play();
    */
-  create(config: ManagerCreateConfig): Core;
+  create<T extends Core>(config: CreateConfigWithCreator<T>): T;
+  create(config: CreateConfigCurve): Curve;
+  create(config: CreateConfigFromTo): FromTo;
+  create(config: ManagerCreateConfig): CoreAnimation;
 
   /**
    * Advance all active animations by `dt` milliseconds.
@@ -63,21 +75,21 @@ export class Manager {
   update(dt: number): void;
 
   /**
-   * Get a snapshot array of all currently playing animations.
+   * Snapshot of currently playing animations (each entry is a `Core` subclass instance).
    */
-  getActiveAnimations(): Core[];
+  getActiveAnimations(): CoreAnimation[];
 
   /**
    * Move an animation to the active list (it will receive `.update()` calls).
    * Called automatically by `animation.play()` when a Manager is attached.
    */
-  addToActive(animation: Core): void;
+  addToActive(animation: CoreAnimation): void;
 
   /**
    * Remove an animation from the active list (stops receiving updates).
    * Called automatically by `animation.stop()` / `.pause()`.
    */
-  removeFromActive(animation: Core): void;
+  removeFromActive(animation: CoreAnimation): void;
 
   /**
    * Stop all active animations (calls `.stop()` on each).

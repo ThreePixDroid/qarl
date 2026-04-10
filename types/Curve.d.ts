@@ -1,5 +1,5 @@
 import { Core } from './Core';
-import { CurveSettings } from './common';
+import { AnyAnimationPartial, CurveSettings } from './common';
 
 /**
  * Curve — animates target properties along a Catmull-Rom spline defined by keypoints.
@@ -53,9 +53,12 @@ export class Curve extends Core {
   /** Resolved property paths assigned from interpolated values each frame. */
   properties: string[];
 
+  /** Setters built from `properties` (one per dimension). */
+  propertySetters: Array<(value: number) => void>;
+
   /**
    * @param overrides - Settings to merge on top of `Curve.DEFAULTS`
    * @param manager - Optional Manager instance to auto-register with
    */
-  constructor(overrides?: Partial<CurveSettings>, manager?: import('./Manager').Manager);
+  constructor(overrides?: AnyAnimationPartial, manager?: import('./Manager').Manager);
 }

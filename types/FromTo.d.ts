@@ -1,5 +1,5 @@
 import { Core } from './Core';
-import { FromToSettings } from './common';
+import { AnyAnimationPartial, FromToSettings } from './common';
 
 /**
  * FromTo — animates target properties by interpolating between `from` and `to` values.
@@ -48,7 +48,7 @@ export class FromTo extends Core {
    * @param overrides - Settings to merge on top of `FromTo.DEFAULTS`
    * @param manager - Optional Manager instance to auto-register with
    */
-  constructor(overrides?: Partial<FromToSettings>, manager?: import('./Manager').Manager);
+  constructor(overrides?: AnyAnimationPartial, manager?: import('./Manager').Manager);
 
   /**
    * Update `from` values on a live animation.
